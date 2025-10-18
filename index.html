@@ -42,6 +42,12 @@
                 radial-gradient(circle at 20% 20%, rgba(139, 0, 0, 0.1) 0%, transparent 50%),
                 radial-gradient(circle at 80% 80%, rgba(75, 0, 130, 0.1) 0%, transparent 50%),
                 linear-gradient(45deg, #000000 0%, #0a0a0a 100%);
+            animation: darkPulse 10s infinite alternate;
+        }
+
+        @keyframes darkPulse {
+            0% { opacity: 0.8; }
+            100% { opacity: 1; }
         }
 
         .main-container {
@@ -85,6 +91,7 @@
             box-shadow: 
                 0 0 20px rgba(139, 0, 0, 0.7),
                 inset 0 0 20px rgba(0, 0, 0, 0.9);
+            animation: avatarPulse 2s infinite alternate;
         }
 
         .avatar-gif {
@@ -92,6 +99,11 @@
             height: 100%;
             object-fit: cover;
             filter: sepia(0.3) contrast(1.1);
+        }
+
+        @keyframes avatarPulse {
+            from { opacity: 0.8; }
+            to { opacity: 1; }
         }
 
         .dark-name {
@@ -133,6 +145,10 @@
             transform: translateY(-2px);
         }
 
+        .rune-button:active {
+            animation: shake 0.3s ease;
+        }
+
         .rune-button::after {
             content: '';
             position: absolute;
@@ -155,6 +171,14 @@
         .rune-button span {
             position: relative;
             z-index: 1;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-3px); }
+            50% { transform: translateX(3px); }
+            75% { transform: translateX(-3px); }
+            100% { transform: translateX(0); }
         }
 
         .altar-panel {
@@ -228,6 +252,7 @@
             margin-bottom: 12px;
             position: relative;
             overflow: hidden;
+            text-decoration: none;
         }
 
         .social-button:hover {
@@ -235,6 +260,10 @@
             border-color: var(--blood);
             box-shadow: 0 0 15px rgba(139, 0, 0, 0.5);
             transform: translateY(-2px);
+        }
+
+        .social-button:active {
+            animation: shake 0.3s ease;
         }
 
         .social-button::after {
@@ -366,6 +395,17 @@
             color: var(--gold);
             margin-bottom: 5px;
             font-family: 'MedievalSharp', cursive;
+            transition: transform 0.5s ease;
+        }
+
+        .stat-value.updated {
+            animation: statPulse 0.5s ease;
+        }
+
+        @keyframes statPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
         }
 
         .shadow-choices {
@@ -384,12 +424,38 @@
             cursor: pointer;
             transition: all 0.3s ease;
             font-family: 'MedievalSharp', cursive;
+            position: relative;
+            overflow: hidden;
         }
 
         .shadow-choice:hover {
             background: rgba(75, 0, 130, 0.5);
             border-color: var(--gold);
             transform: translateY(-3px);
+        }
+
+        .shadow-choice::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(75, 0, 130, 0.4);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.5s ease, height 0.5s ease;
+            z-index: 0;
+        }
+
+        .shadow-choice:hover::after {
+            width: 200px;
+            height: 200px;
+        }
+
+        .shadow-choice span {
+            position: relative;
+            z-index: 1;
         }
 
         .game-prophecy {
@@ -403,18 +469,27 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: background-color 0.5s ease, border-color 0.5s ease;
         }
 
         .prophecy-good {
             background: rgba(75, 0, 130, 0.3);
             border: 1px solid var(--purple);
             color: var(--silver);
+            animation: prophecyFlash 1s ease;
         }
 
         .prophecy-bad {
             background: rgba(139, 0, 0, 0.3);
             border: 1px solid var(--blood);
             color: var(--silver);
+            animation: prophecyFlash 1s ease;
+        }
+
+        @keyframes prophecyFlash {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
         }
 
         .oracle-chat {
@@ -567,7 +642,7 @@
     
     <!-- Аудио элемент -->
     <audio id="backgroundMusic" loop>
-        <source src="song.mp3" type="audio/mpeg">
+        <source src="https://www.dropbox.com/scl/fi/jmwhjemvfed0ccsqkb711/song.mp3?rlkey=yx9kyhfloou3fdz41n2kpkaf1&st=f8w0rbwm&dl=1" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
 
@@ -598,27 +673,19 @@
 
                 <div class="shadow-choices">
                     <button class="shadow-choice" onclick="makeMove('work')">
-                        <i class="fas fa-skull"></i><br>
-                        СБОР ДУШ<br>
-                        <small>+20 душ, -10% энергии</small>
+                        <span><i class="fas fa-skull"></i><br>СБОР ДУШ<br><small>+20 душ, -10% энергии</small></span>
                     </button>
                     
                     <button class="shadow-choice" onclick="makeMove('gamble')">
-                        <i class="fas fa-dice-d20"></i><br>
-                        РИТУАЛ РИСКА<br>
-                        <small>±50 душ</small>
+                        <span><i class="fas fa-dice-d20"></i><br>РИТУАЛ РИСКА<br><small>±50 душ</small></span>
                     </button>
                     
                     <button class="shadow-choice" onclick="makeMove('fight')">
-                        <i class="fas fa-hand-fist"></i><br>
-                        ЗАХВАТ ВЛАСТИ<br>
-                        <small>+30 душ, риск</small>
+                        <span><i class="fas fa-hand-fist"></i><br>ЗАХВАТ ВЛАСТИ<br><small>+30 душ, риск</small></span>
                     </button>
                     
                     <button class="shadow-choice" onclick="makeMove('negotiate')">
-                        <i class="fas fa-scroll"></i><br>
-                        ТЕМНЫЙ ДОГОВОР<br>
-                        <small>+15% власти</small>
+                        <span><i class="fas fa-scroll"></i><br>ТЕМНЫЙ ДОГОВОР<br><small>+15% власти</small></span>
                     </button>
                 </div>
             </div>
@@ -638,7 +705,7 @@
                 </div>
                 <div class="oracle-input-container">
                     <input type="text" class="oracle-input" id="chatInput" placeholder="Впиши свой вопрос в свиток...">
-                    <button class="rune-button" onclick="sendMessage()" style="width: auto; margin: 0;">ВОПРОС</button>
+                    <button class="rune-button" onclick="sendMessage()" style="width: auto; margin: 0;"><span>ВОПРОС</span></button>
                 </div>
             </div>
         </div>
@@ -767,7 +834,7 @@
     <script>
         // ==================== КОНФИГУРАЦИЯ ====================
         const CUSTOM_AVATAR = 'https://imglink.io/i/ee931dfb-3c54-468b-9569-19e7a95d3e85.gif';
-        const MUSIC_TRACKS = ['song.mp3'];
+        const MUSIC_TRACKS = ['https://www.dropbox.com/scl/fi/jmwhjemvfed0ccsqkb711/song.mp3?rlkey=yx9kyhfloou3fdz41n2kpkaf1&st=f8w0rbwm&dl=1'];
 
         // ==================== ПЕРЕМЕННЫЕ ====================
         const audioPlayer = document.getElementById('backgroundMusic');
@@ -792,7 +859,7 @@
             audioPlayer.preload = 'auto';
             audioPlayer.addEventListener('error', () => {
                 console.error('Ошибка загрузки трека: ', MUSIC_TRACKS[currentTrack]);
-                alert('Тёмный хор не может зазвучать... Проверь, что файл song.mp3 находится в папке с сайтом.');
+                alert('Тёмный хор не может зазвучать... Проверь ссылку на песню или загрузите новый файл.');
             });
         }
 
@@ -809,7 +876,7 @@
             document.querySelector('.altar-btn[onclick="playMusic()"]').addEventListener('click', () => {
                 audioPlayer.play().catch(err => {
                     console.error('Ошибка воспроизведения:', err);
-                    alert('Тьма не позволяет воспроизвести хор... Проверь звук на устройстве.');
+                    alert('Тьма не позволяет воспроизвести хор... Проверь звук на устройстве или ссылку на песню.');
                 });
             });
         }
@@ -818,7 +885,7 @@
         function playMusic() {
             audioPlayer.play().catch(err => {
                 console.error('Ошибка воспроизведения:', err);
-                alert('Тьма не позволяет воспроизвести хор... Проверь звук на устройстве.');
+                alert('Тьма не позволяет воспроизвести хор... Проверь звук на устройстве или ссылку на песню.');
             });
         }
 
@@ -827,7 +894,6 @@
         }
 
         function nextTrack() {
-            // Поскольку у нас один трек, просто перезапускаем
             audioPlayer.currentTime = 0;
             audioPlayer.play().catch(err => {
                 console.error('Ошибка воспроизведения трека:', err);
@@ -856,9 +922,18 @@
         }
 
         function updateGameDisplay() {
-            document.getElementById('healthValue').textContent = gameState.health + '%';
-            document.getElementById('moneyValue').textContent = gameState.money;
-            document.getElementById('respectValue').textContent = gameState.respect + '%';
+            const health = document.getElementById('healthValue');
+            const money = document.getElementById('moneyValue');
+            const respect = document.getElementById('respectValue');
+            
+            health.textContent = gameState.health + '%';
+            money.textContent = gameState.money;
+            respect.textContent = gameState.respect + '%';
+            
+            [health, money, respect].forEach(el => {
+                el.classList.add('updated');
+                setTimeout(() => el.classList.remove('updated'), 500);
+            });
         }
 
         function makeMove(action) {
