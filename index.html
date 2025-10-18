@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nightmarrez | Теневая Реальность</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=MedievalSharp&family=UnifrakturMaguntia&family=Pirata+One&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --dark: #0a0a0a;
+            --darker: #000000;
+            --blood: #8b0000;
+            --purple: #4b0082;
+            --gold: #daa520;
+            --silver: #c0c0c0;
+        }
+        
+        body {
+            background: var(--darker);
+            color: var(--silver);
+            min-height: 100vh;
+            font-family: 'Cinzel', serif;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .dark-realm {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(139, 0, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(75, 0, 130, 0.1) 0%, transparent 50%),
+                linear-gradient(45deg, #000000 0%, #0a0a0a 100%);
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 30px;
+            min-height: 100vh;
+        }
+
+        .ancient-scroll {
+            background: 
+                linear-gradient(rgba(10, 10, 10, 0.9), rgba(10, 10, 10, 0.9));
+            border: 2px solid var(--gold);
+            border-radius: 15px;
+            padding: 25px;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+            box-shadow: 
+                0 0 30px rgba(139, 0, 0, 0.5),
+                inset 0 0 50px rgba(0, 0, 0, 0.8);
+        }
+
+        .scroll-header {
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--gold);
+            padding-bottom: 20px;
+        }
+
+        .avatar-container {
+            width: 160px;
+            height: 160px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid var(--blood);
+            box-shadow: 
+                0 0 20px rgba(139, 0, 0, 0.7),
+                inset 0 0 20px rgba(0, 0, 0, 0.9);
+        }
+
+        .avatar-gif {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: sepia(0.3) contrast(1.1);
+        }
+
+        .dark-name {
+            font-family: 'Pirata One', cursive;  /* Новый шрифт: более читаемый готический */
+            font-size: 2.2rem;
+            color: var(--gold);
+            margin-bottom: 8px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            letter-spacing: 1px;  /* Добавлено для лучшей читаемости */
+        }
+
+        .dark-title {
+            font-family: 'MedievalSharp', cursive;
+            font-size: 1rem;
+            color: var(--blood);
+            letter-spacing: 2px;
+        }
+
+        .rune-button {
+            background: linear-gradient(45deg, #1a1a1a, #2d2d2d);
+            border: 1px solid var(--gold);
+            color: var(--silver);
+            padding: 14px;
+            border-radius: 8px;
+            font-family: 'MedievalSharp', cursive;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 12px;
+        }
+
+        .rune-button:hover {
+            background: linear-gradient(45deg, #2d2d2d, #3d3d3d);
+            border-color: var(--blood);
+            box-shadow: 0 0 15px rgba(139, 0, 0, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .altar-panel {
+            background: 
+                linear-gradient(rgba(26, 26, 26, 0.8), rgba(26, 26, 26, 0.8));
+            border: 1px solid var(--blood);
+            border-radius: 10px;
+            padding: 18px;
+            margin-top: 20px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.9);
+        }
+
+        .altar-title {
+            text-align: center;
+            color: var(--gold);
+            margin-bottom: 15px;
+            font-family: 'MedievalSharp', cursive;
+            font-size: 1.1rem;
+        }
+
+        .altar-controls {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .altar-btn {
+            background: rgba(139, 0, 0, 0.3);
+            border: 1px solid var(--blood);
+            color: var(--silver);
+            padding: 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            flex: 1;
+            transition: all 0.3s ease;
+            font-family: 'MedievalSharp', cursive;
+        }
+
+        .altar-btn:hover {
+            background: rgba(139, 0, 0, 0.5);
+            box-shadow: 0 0 10px rgba(139, 0, 0, 0.7);
+        }
+
+        .volume-sacrifice {
+            width: 100%;
+            margin: 12px 0;
+            background: rgba(139, 0, 0, 0.2);
+            border-radius: 5px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .portal-content {
+            background: 
+                linear-gradient(135deg, rgba(26, 26, 26, 0.95), rgba(10, 10, 10, 0.95));
+            border: 3px solid var(--blood);
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 700px;
+            width: 90%;
+            position: relative;
+            box-shadow: 
+                0 0 50px rgba(139, 0, 0, 0.7),
+                inset 0 0 30px rgba(0, 0, 0, 0.9);
+        }
+
+        .close-portal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: var(--blood);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-portal:hover {
+            color: var(--gold);
+            transform: scale(1.2);
+        }
+
+        .portal-title {
+            font-family: 'UnifrakturMaguntia', cursive;  /* Оставил оригинал для заголовков модалок, но можешь изменить и здесь */
+            font-size: 2.5rem;
+            color: var(--gold);
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .shadow-game {
+            background: rgba(26, 26, 26, 0.8);
+            border: 2px solid var(--purple);
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+        }
+
+        .soul-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .soul-stat {
+            background: rgba(139, 0, 0, 0.2);
+            border: 1px solid var(--blood);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.4rem;
+            color: var(--gold);
+            margin-bottom: 5px;
+            font-family: 'MedievalSharp', cursive;
+        }
+
+        .shadow-choices {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .shadow-choice {
+            background: rgba(75, 0, 130, 0.3);
+            border: 1px solid var(--purple);
+            border-radius: 8px;
+            padding: 15px;
+            color: var(--silver);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'MedievalSharp', cursive;
+        }
+
+        .shadow-choice:hover {
+            background: rgba(75, 0, 130, 0.5);
+            border-color: var(--gold);
+            transform: translateY(-3px);
+        }
+
+        .game-prophecy {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            font-family: 'Cinzel', serif;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .prophecy-good {
+            background: rgba(75, 0, 130, 0.3);
+            border: 1px solid var(--purple);
+            color: var(--silver);
+        }
+
+        .prophecy-bad {
+            background: rgba(139, 0, 0, 0.3);
+            border: 1px solid var(--blood);
+            color: var(--silver);
+        }
+
+        .oracle-chat {
+            background: rgba(26, 26, 26, 0.8);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 2px solid var(--purple);
+        }
+
+        .oracle-messages {
+            height: 300px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 8px;
+            border: 1px solid var(--blood);
+        }
+
+        .oracle-message {
+            margin-bottom: 12px;
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .oracle-ai {
+            background: rgba(75, 0, 130, 0.3);
+            border-left: 3px solid var(--purple);
+        }
+
+        .oracle-user {
+            background: rgba(139, 0, 0, 0.3);
+            border-right: 3px solid var(--blood);
+            text-align: right;
+        }
+
+        .oracle-input-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .oracle-input {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid var(--blood);
+            border-radius: 5px;
+            padding: 12px;
+            color: var(--silver);
+            font-family: 'Cinzel', serif;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .welcome-sanctum {
+            background: 
+                linear-gradient(rgba(10, 10, 10, 0.8), rgba(10, 10, 10, 0.8));
+            border: 2px solid var(--gold);
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 
+                0 0 30px rgba(139, 0, 0, 0.5),
+                inset 0 0 30px rgba(0, 0, 0, 0.9);
+        }
+
+        .sanctum-title {
+            font-family: 'UnifrakturMaguntia', cursive;  /* Можно изменить и здесь на Pirata One, если хочешь */
+            font-size: 3rem;
+            color: var(--gold);
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
+        }
+
+        .sanctum-subtitle {
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            color: var(--silver);
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .powers-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .power-card {
+            background: rgba(26, 26, 26, 0.8);
+            border: 2px solid var(--purple);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+        }
+
+        .power-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-5px);
+            box-shadow: 
+                0 5px 20px rgba(139, 0, 0, 0.5),
+                inset 0 0 20px rgba(0, 0, 0, 0.8);
+        }
+
+        .power-icon {
+            font-size: 2.5rem;
+            color: var(--blood);
+            margin-bottom: 15px;
+        }
+
+        .power-title {
+            font-family: 'MedievalSharp', cursive;
+            color: var(--gold);
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+            .shadow-choices {
+                grid-template-columns: 1fr;
+            }
+            .powers-grid {
+                grid-template-columns: 1fr;
+            }
+            .soul-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dark-realm"></div>
+    
+    <!-- Аудио элемент -->
+    <audio id="backgroundMusic" loop>
+        <source src="https://drive.google.com/uc?export=download&id=1G8YHAVEaBXB9iar361btxe2C4jzjzjEqi9" type="audio/mpeg">
+    </audio>
+
+    <!-- Модальное окно игры -->
+    <div class="modal" id="gameModal">
+        <div class="portal-content">
+            <button class="close-portal" onclick="closePortal('gameModal')">&times;</button>
+            <h1 class="portal-title">ТЕНЕВАЯ ИГРА</h1>
+            <div class="shadow-game">
+                <div class="soul-stats">
+                    <div class="soul-stat">
+                        <div class="stat-value" id="healthValue">100%</div>
+                        <div>ЭНЕРГИЯ</div>
+                    </div>
+                    <div class="soul-stat">
+                        <div class="stat-value" id="moneyValue">50</div>
+                        <div>ДУШИ</div>
+                    </div>
+                    <div class="soul-stat">
+                        <div class="stat-value" id="respectValue">25%</div>
+                        <div>ВЛАСТЬ</div>
+                    </div>
+                </div>
+
+                <div class="game-prophecy" id="gameResult">
+                    Сделай свой выбор, приспешник тьмы...
+                </div>
+
+                <div class="shadow-choices">
+                    <button class="shadow-choice" onclick="makeMove('work')">
+                        <i class="fas fa-skull"></i><br>
+                        СБОР ДУШ<br>
+                        <small>+20 душ, -10% энергии</small>
+                    </button>
+                    
+                    <button class="shadow-choice" onclick="makeMove('gamble')">
+                        <i class="fas fa-dice-d20"></i><br>
+                        РИТУАЛ РИСКА<br>
+                        <small>±50 душ</small>
+                    </button>
+                    
+                    <button class="shadow-choice" onclick="makeMove('fight')">
+                        <i class="fas fa-hand-fist"></i><br>
+                        ЗАХВАТ ВЛАСТИ<br>
+                        <small>+30 душ, риск</small>
+                    </button>
+                    
+                    <button class="shadow-choice" onclick="makeMove('negotiate')">
+                        <i class="fas fa-scroll"></i><br>
+                        ТЕМНЫЙ ДОГОВОР<br>
+                        <small>+15% власти</small>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно чата -->
+    <div class="modal" id="chatModal">
+        <div class="portal-content">
+            <button class="close-portal" onclick="closePortal('chatModal')">&times;</button>
+            <h2 class="portal-title">ОРАКУЛ ТЬМЫ</h2>
+            <div class="oracle-chat">
+                <div class="oracle-messages" id="chatMessages">
+                    <div class="oracle-message oracle-ai">
+                        <strong>ОРАКУЛ:</strong> Приветствую в теневом мире... Задай вопрос, и я открою тайны тьмы.
+                    </div>
+                </div>
+                <div class="oracle-input-container">
+                    <input type="text" class="oracle-input" id="chatInput" placeholder="Впиши свой вопрос в свиток...">
+                    <button class="rune-button" onclick="sendMessage()" style="width: auto; margin: 0;">ВОПРОС</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <!-- Боковая панель -->
+        <aside class="ancient-scroll">
+            <div class="scroll-header">
+                <div class="avatar-container">
+                    <img src="https://imglink.io/i/ee931dfb-3c54-468b-9569-19e7a95d3e85.gif" alt="Dark Avatar" class="avatar-gif">
+                </div>
+                <div class="dark-name">NIGHTMARREZ</div>
+                <div class="dark-title">PRIEST OF SHADOWS</div>
+            </div>
+
+            <button class="rune-button" onclick="openPortal('gameModal')">
+                <i class="fas fa-chess-board"></i> ТЕНЕВАЯ ИГРА
+            </button>
+
+            <button class="rune-button" onclick="openPortal('chatModal')">
+                <i class="fas fa-crystal-ball"></i> ОРАКУЛ ТЬМЫ
+            </button>
+
+            <button class="rune-button" onclick="initiateDarkGreeting()">
+                <i class="fas fa-ghost"></i> ШЕПОТ ТЕНЕЙ
+            </button>
+
+            <!-- Аудио панель -->
+            <div class="altar-panel">
+                <div class="altar-title">
+                    <i class="fas fa-music"></i> ХОР ТЬМЫ
+                </div>
+                
+                <div class="altar-controls">
+                    <button class="altar-btn" onclick="playMusic()">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button class="altar-btn" onclick="pauseMusic()">
+                        <i class="fas fa-pause"></i>
+                    </button>
+                    <button class="altar-btn" onclick="nextTrack()">
+                        <i class="fas fa-forward"></i>
+                    </button>
+                </div>
+
+                <input type="range" class="volume-sacrifice" id="volumeControl" min="0" max="1" step="0.1" value="0.5" onchange="changeVolume(this.value)">
+                <div style="text-align: center; color: var(--silver); font-size: 0.8rem; font-family: 'MedievalSharp';">Сила Звука</div>
+            </div>
+        </aside>
+
+        <!-- Основной контент -->
+        <main class="main-content">
+            <section class="welcome-sanctum">
+                <h1 class="sanctum-title">САНКТУАРИЙ ТЬМЫ</h1>
+                <p class="sanctum-subtitle">
+                    Добро пожаловать в обитель теней, где реальность переплетается с мифами.<br>
+                    Здесь правит магия, а тайны ждут своего открывателя...
+                </p>
+            </section>
+
+            <div class="powers-grid">
+                <section class="power-card" onclick="openPortal('gameModal')">
+                    <div class="power-icon">
+                        <i class="fas fa-chess-board"></i>
+                    </div>
+                    <h3 class="power-title">ТЕНЕВАЯ ИГРА</h3>
+                    <p style="color: var(--silver); font-family: 'Cinzel';">
+                        Испытай свою судьбу в игре темных сил
+                    </p>
+                </section>
+
+                <section class="power-card" onclick="openPortal('chatModal')">
+                    <div class="power-icon">
+                        <i class="fas fa-crystal-ball"></i>
+                    </div>
+                    <h3 class="power-title">ОРАКУЛ ТЬМЫ</h3>
+                    <p style="color: var(--silver); font-family: 'Cinzel';">
+                        Спроси у древнего оракула о тайнах мироздания
+                    </p>
+                </section>
+            </div>
+
+            <!-- Дополнительная информация -->
+            <section style="background: rgba(26,26,26,0.8); padding: 25px; border-radius: 12px; border: 2px solid var(--purple);">
+                <h2 style="color: var(--gold); text-align: center; margin-bottom: 20px; font-family: 'UnifrakturMaguntia';">
+                    СИЛЫ ТЬМЫ
+                </h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div style="text-align: center;">
+                        <i class="fas fa-moon" style="color: var(--purple); font-size: 1.5rem; margin-bottom: 8px;"></i>
+                        <h4 style="color: var(--blood); font-family: 'MedievalSharp';">НОЧНАЯ МАГИЯ</h4>
+                        <p style="color: var(--silver); font-size: 0.9rem;">Сила лунного света и теней</p>
+                    </div>
+                    <div style="text-align: center;">
+                        <i class="fas fa-eye" style="color: var(--blood); font-size: 1.5rem; margin-bottom: 8px;"></i>
+                        <h4 style="color: var(--blood); font-family: 'MedievalSharp';">ПРОРОЧЕСТВА</h4>
+                        <p style="color: var(--silver); font-size: 0.9rem;">Видение скрытых истин</p>
+                    </div>
+                    <div style="text-align: center;">
+                        <i class="fas fa-hat-wizard" style="color: var(--gold); font-size: 1.5rem; margin-bottom: 8px;"></i>
+                        <h4 style="color: var(--blood); font-family: 'MedievalSharp';">ДРЕВНИЕ ЗНАНИЯ</h4>
+                        <p style="color: var(--silver); font-size: 0.9rem;">Мудрость забытых эпох</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // ==================== КОНФИГУРАЦИЯ ====================
+        const CUSTOM_AVATAR = 'https://imglink.io/i/ee931dfb-3c54-468b-9569-19e7a95d3e85.gif';
+        const MUSIC_TRACKS = [
+            'https://files.catbox.moe/qywqal.mp3',
+            'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+            'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3'
+        ];
+
+        // ==================== ПЕРЕМЕННЫЕ ====================
+        const audioPlayer = document.getElementById('backgroundMusic');
+        let currentTrack = 0;
+        let gameState = {
+            health: 100,
+            money: 50,
+            respect: 25,
+            day: 1
+        };
+
+        // ==================== ИНИЦИАЛИЗАЦИЯ ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            setupAudio();
+            setupEventListeners();
+        });
+
+        function setupAudio() {
+            audioPlayer.src = MUSIC_TRACKS[currentTrack];
+            audioPlayer.volume = 0.5;
+            audioPlayer.play().catch(() => {
+                console.log('Автовоспроизведение заблокировано');
+            });
+        }
+
+        function setupEventListeners() {
+            document.getElementById('chatInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') sendMessage();
+            });
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closePortal('gameModal');
+                    closePortal('chatModal');
+                }
+            });
+        }
+
+        // ==================== МУЗЫКА ====================
+        function playMusic() {
+            audioPlayer.play();
+        }
+
+        function pauseMusic() {
+            audioPlayer.pause();
+        }
+
+        function nextTrack() {
+            currentTrack = (currentTrack + 1) % MUSIC_TRACKS.length;
+            audioPlayer.src = MUSIC_TRACKS[currentTrack];
+            audioPlayer.play();
+        }
+
+        function changeVolume(volume) {
+            audioPlayer.volume = volume;
+        }
+
+        // ==================== ПОРТАЛЫ ====================
+        function openPortal(portalId) {
+            document.getElementById(portalId).style.display = 'flex';
+            if (portalId === 'gameModal') startGame();
+        }
+
+        function closePortal(portalId) {
+            document.getElementById(portalId).style.display = 'none';
+        }
+
+        // ==================== ИГРА ====================
+        function startGame() {
+            gameState = { health: 100, money: 50, respect: 25, day: 1 };
+            updateGameDisplay();
+            showResult('Сделай свой выбор, приспешник тьмы...', 'neutral');
+        }
+
+        function updateGameDisplay() {
+            document.getElementById('healthValue').textContent = gameState.health + '%';
+            document.getElementById('moneyValue').textContent = gameState.money;
+            document.getElementById('respectValue').textContent = gameState.respect + '%';
+        }
+
+        function makeMove(action) {
+            let resultMessage = '';
+            let resultType = 'neutral';
+
+            switch(action) {
+                case 'work':
+                    gameState.money += 20;
+                    gameState.health -= 10;
+                    resultMessage = 'Ты собрал души заблудших. +20 душ, но энергия упала на 10%';
+                    break;
+                    
+                case 'gamble':
+                    if (Math.random() > 0.4) {
+                        const winAmount = Math.floor(Math.random() * 50) + 25;
+                        gameState.money += winAmount;
+                        gameState.respect += 5;
+                        resultMessage = `Ритуал удался! +${winAmount} душ и +5% власти`;
+                        resultType = 'good';
+                    } else {
+                        const loseAmount = Math.floor(Math.random() * 30) + 20;
+                        gameState.money = Math.max(0, gameState.money - loseAmount);
+                        resultMessage = `Ритуал провалился... Потеряно ${loseAmount} душ`;
+                        resultType = 'bad';
+                    }
+                    break;
+                    
+                case 'fight':
+                    if (Math.random() > 0.6) {
+                        gameState.money += 30;
+                        gameState.respect += 15;
+                        resultMessage = 'Захват власти удался! +30 душ и +15% власти';
+                        resultType = 'good';
+                    } else {
+                        gameState.health -= 30;
+                        gameState.money = Math.max(0, gameState.money - 15);
+                        resultMessage = 'Провал... Потеряно 30% энергии и 15 душ';
+                        resultType = 'bad';
+                    }
+                    break;
+                    
+                case 'negotiate':
+                    gameState.respect += 15;
+                    resultMessage = 'Темный договор заключен! +15% власти';
+                    resultType = 'good';
+                    break;
+            }
+            
+            gameState.day++;
+            
+            if (gameState.money >= 200) {
+                resultMessage = '🎉 ТЫ СТАЛ ПОВЕЛИТЕЛЕМ ТЬМЫ! 🎉';
+                resultType = 'good';
+                endGame();
+            } else if (gameState.health <= 0) {
+                resultMessage = '💀 Твоя энергия иссякла... Тень поглотила тебя.';
+                resultType = 'bad';
+                endGame();
+            }
+            
+            updateGameDisplay();
+            showResult(resultMessage, resultType);
+        }
+
+        function showResult(message, type) {
+            const resultElement = document.getElementById('gameResult');
+            resultElement.textContent = message;
+            resultElement.className = 'game-prophecy';
+            
+            if (type === 'good') {
+                resultElement.classList.add('prophecy-good');
+            } else if (type === 'bad') {
+                resultElement.classList.add('prophecy-bad');
+            }
+        }
+
+        function endGame() {
+            setTimeout(() => {
+                document.querySelectorAll('.shadow-choice').forEach(btn => {
+                    btn.disabled = true;
+                });
+            }, 1000);
+        }
+
+        // ==================== ЧАТ ====================
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const messages = document.getElementById('chatMessages');
+            
+            if (input.value.trim() === '') return;
+            
+            // Сообщение пользователя
+            const userMessage = document.createElement('div');
+            userMessage.classList.add('oracle-message', 'oracle-user');
+            userMessage.innerHTML = `<strong>ТЫ:</strong> ${input.value}`;
+            messages.appendChild(userMessage);
+            
+            // Ответ оракула
+            setTimeout(() => {
+                const aiMessage = document.createElement('div');
+                aiMessage.classList.add('oracle-message', 'oracle-ai');
+                
+                const responses = [
+                    "Тени шепчут мне ответ... Слушай внимательно.",
+                    "Древние знания открываются передо мной...",
+                    "В темных водах судьбы я вижу ответ на твой вопрос.",
+                    "Силы тьмы даруют мне мудрость для тебя...",
+                    "Свиток судьбы раскрывается... Вот что предначертано."
+                ];
+                
+                aiMessage.innerHTML = `<strong>ОРАКУЛ:</strong> ${responses[Math.floor(Math.random() * responses.length)]}`;
+                messages.appendChild(aiMessage);
+                messages.scrollTop = messages.scrollHeight;
+            }, 1000);
+            
+            input.value = '';
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        // ==================== ГОЛОСОВОЕ ПРИВЕТСТВИЕ ====================
+        function initiateDarkGreeting() {
+            const messages = [
+                "Приветствую в Санктуарии Тьмы...",
+                "Тени приветствуют тебя, странник...",
+                "Силы тьмы пробуждаются от твоего присутствия...",
+                "Добро пожаловать в обитель древних секретов..."
+            ];
+            
+            const message = messages[Math.floor(Math.random() * messages.length)];
+            
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(message);
+                utterance.lang = 'ru-RU';
+                utterance.rate = 0.7;
+                utterance.pitch = 0.8;
+                speechSynthesis.speak(utterance);
+            }
+        }
+    </script>
+</body>
+</html>
