@@ -95,12 +95,12 @@
         }
 
         .dark-name {
-            font-family: 'Pirata One', cursive;  /* Новый шрифт: более читаемый готический */
+            font-family: 'Pirata One', cursive;
             font-size: 2.2rem;
             color: var(--gold);
             margin-bottom: 8px;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-            letter-spacing: 1px;  /* Добавлено для лучшей читаемости */
+            letter-spacing: 1px;
         }
 
         .dark-title {
@@ -224,7 +224,7 @@
         }
 
         .portal-title {
-            font-family: 'UnifrakturMaguntia', cursive;  /* Оставил оригинал для заголовков модалок, но можешь изменить и здесь */
+            font-family: 'UnifrakturMaguntia', cursive;
             font-size: 2.5rem;
             color: var(--gold);
             margin-bottom: 20px;
@@ -381,7 +381,7 @@
         }
 
         .sanctum-title {
-            font-family: 'UnifrakturMaguntia', cursive;  /* Можно изменить и здесь на Pirata One, если хочешь */
+            font-family: 'UnifrakturMaguntia', cursive;
             font-size: 3rem;
             color: var(--gold);
             margin-bottom: 20px;
@@ -455,7 +455,9 @@
     
     <!-- Аудио элемент -->
     <audio id="backgroundMusic" loop>
-        <source src="https://drive.google.com/uc?export=download&id=1G8YHAVEaBXB9iar361btxe2C4jzjzjEqi9" type="audio/mpeg">
+        <source src="https://files.catbox.moe/qywqal.mp3" type="audio/mpeg">
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
     </audio>
 
     <!-- Модальное окно игры -->
@@ -661,10 +663,15 @@
         });
 
         function setupAudio() {
+            // Устанавливаем первый трек
             audioPlayer.src = MUSIC_TRACKS[currentTrack];
             audioPlayer.volume = 0.5;
-            audioPlayer.play().catch(() => {
-                console.log('Автовоспроизведение заблокировано');
+            // Отключаем автозапуск, чтобы избежать блокировки на мобильных
+            audioPlayer.preload = 'auto';
+            // Проверяем, может ли трек загрузиться
+            audioPlayer.addEventListener('error', () => {
+                console.error('Ошибка загрузки трека: ', MUSIC_TRACKS[currentTrack]);
+                nextTrack(); // Переключаемся на следующий трек при ошибке
             });
         }
 
@@ -678,11 +685,19 @@
                     closePortal('chatModal');
                 }
             });
+            // Добавляем обработчик для воспроизведения после взаимодействия
+            document.querySelector('.altar-btn[onclick="playMusic()"]').addEventListener('click', () => {
+                audioPlayer.play().catch(err => {
+                    console.error('Ошибка воспроизведения:', err);
+                });
+            });
         }
 
         // ==================== МУЗЫКА ====================
         function playMusic() {
-            audioPlayer.play();
+            audioPlayer.play().catch(err => {
+                console.error('Ошибка воспроизведения:', err);
+            });
         }
 
         function pauseMusic() {
@@ -692,7 +707,9 @@
         function nextTrack() {
             currentTrack = (currentTrack + 1) % MUSIC_TRACKS.length;
             audioPlayer.src = MUSIC_TRACKS[currentTrack];
-            audioPlayer.play();
+            audioPlayer.play().catch(err => {
+                console.error('Ошибка воспроизведения трека:', err);
+            });
         }
 
         function changeVolume(volume) {
