@@ -122,6 +122,8 @@
             transition: all 0.3s ease;
             width: 100%;
             margin-bottom: 12px;
+            position: relative;
+            overflow: hidden;
         }
 
         .rune-button:hover {
@@ -129,6 +131,30 @@
             border-color: var(--blood);
             box-shadow: 0 0 15px rgba(139, 0, 0, 0.5);
             transform: translateY(-2px);
+        }
+
+        .rune-button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(139, 0, 0, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+            z-index: 0;
+        }
+
+        .rune-button:hover::after {
+            width: 300px;
+            height: 300px;
+        }
+
+        .rune-button span {
+            position: relative;
+            z-index: 1;
         }
 
         .altar-panel {
@@ -177,6 +203,85 @@
             margin: 12px 0;
             background: rgba(139, 0, 0, 0.2);
             border-radius: 5px;
+        }
+
+        .social-panel {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .social-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(45deg, #1a1a1a, #2d2d2d);
+            border: 1px solid var(--gold);
+            color: var(--silver);
+            padding: 14px;
+            border-radius: 8px;
+            font-family: 'MedievalSharp', cursive;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .social-button:hover {
+            background: linear-gradient(45deg, #2d2d2d, #3d3d3d);
+            border-color: var(--blood);
+            box-shadow: 0 0 15px rgba(139, 0, 0, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .social-button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(139, 0, 0, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+            z-index: 0;
+        }
+
+        .social-button:hover::after {
+            width: 300px;
+            height: 300px;
+        }
+
+        .social-button span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .artifact-panel {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .artifact-icon {
+            font-size: 3rem;
+            color: var(--blood);
+            transition: transform 2s ease;
+        }
+
+        .artifact-icon:hover {
+            transform: rotate(360deg);
+        }
+
+        .artifact-text {
+            font-family: 'MedievalSharp', cursive;
+            color: var(--gold);
+            font-size: 0.9rem;
+            margin-top: 10px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
         }
 
         .modal {
@@ -339,6 +444,8 @@
         .oracle-ai {
             background: rgba(75, 0, 130, 0.3);
             border-left: 3px solid var(--purple);
+            opacity: 0;
+            animation: fadeIn 1s ease-in forwards;
         }
 
         .oracle-user {
@@ -434,6 +541,11 @@
             font-size: 1.3rem;
         }
 
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         @media (max-width: 768px) {
             .main-container {
                 grid-template-columns: 1fr;
@@ -455,8 +567,7 @@
     
     <!-- Аудио элемент -->
     <audio id="backgroundMusic" loop>
-        <source src="https://files.catbox.moe/qywqal.mp3" type="audio/mpeg">
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+        <source src="song.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
 
@@ -522,7 +633,7 @@
             <div class="oracle-chat">
                 <div class="oracle-messages" id="chatMessages">
                     <div class="oracle-message oracle-ai">
-                        <strong>ОРАКУЛ:</strong> Приветствую в теневом мире... Задай вопрос, и я открою тайны тьмы.
+                        <strong>ОРАКУЛ:</strong> Я — глас NIGHTMARREZ, Жреца Теней. Задай свой вопрос, смертный, и тьма ответит...
                     </div>
                 </div>
                 <div class="oracle-input-container">
@@ -545,15 +656,15 @@
             </div>
 
             <button class="rune-button" onclick="openPortal('gameModal')">
-                <i class="fas fa-chess-board"></i> ТЕНЕВАЯ ИГРА
+                <span><i class="fas fa-chess-board"></i> ТЕНЕВАЯ ИГРА</span>
             </button>
 
             <button class="rune-button" onclick="openPortal('chatModal')">
-                <i class="fas fa-crystal-ball"></i> ОРАКУЛ ТЬМЫ
+                <span><i class="fas fa-crystal-ball"></i> ОРАКУЛ ТЬМЫ</span>
             </button>
 
             <button class="rune-button" onclick="initiateDarkGreeting()">
-                <i class="fas fa-ghost"></i> ШЕПОТ ТЕНЕЙ
+                <span><i class="fas fa-ghost"></i> ШЕПОТ ТЕНЕЙ</span>
             </button>
 
             <!-- Аудио панель -->
@@ -576,6 +687,22 @@
 
                 <input type="range" class="volume-sacrifice" id="volumeControl" min="0" max="1" step="0.1" value="0.5" onchange="changeVolume(this.value)">
                 <div style="text-align: center; color: var(--silver); font-size: 0.8rem; font-family: 'MedievalSharp';">Сила Звука</div>
+            </div>
+
+            <!-- Социальные сети -->
+            <div class="social-panel">
+                <a href="https://t.me/Nightmarrez" class="social-button" target="_blank">
+                    <span><i class="fab fa-telegram-plane"></i> ТЕЛЕГРАМ ТЬМЫ</span>
+                </a>
+                <a href="https://www.twitch.tv/lirichniy10" class="social-button" target="_blank">
+                    <span><i class="fab fa-twitch"></i> ТВИЧ ТЕНЕЙ</span>
+                </a>
+            </div>
+
+            <!-- Тёмный артефакт -->
+            <div class="artifact-panel">
+                <i class="fas fa-star fa-spin artifact-icon"></i>
+                <div class="artifact-text">ТЁМНЫЙ АРТЕФАКТ</div>
             </div>
         </aside>
 
@@ -640,11 +767,7 @@
     <script>
         // ==================== КОНФИГУРАЦИЯ ====================
         const CUSTOM_AVATAR = 'https://imglink.io/i/ee931dfb-3c54-468b-9569-19e7a95d3e85.gif';
-        const MUSIC_TRACKS = [
-            'https://files.catbox.moe/qywqal.mp3',
-            'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
-            'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3'
-        ];
+        const MUSIC_TRACKS = ['song.mp3'];
 
         // ==================== ПЕРЕМЕННЫЕ ====================
         const audioPlayer = document.getElementById('backgroundMusic');
@@ -655,6 +778,7 @@
             respect: 25,
             day: 1
         };
+        let lastQuestionTopic = null;
 
         // ==================== ИНИЦИАЛИЗАЦИЯ ====================
         document.addEventListener('DOMContentLoaded', function() {
@@ -663,15 +787,12 @@
         });
 
         function setupAudio() {
-            // Устанавливаем первый трек
             audioPlayer.src = MUSIC_TRACKS[currentTrack];
             audioPlayer.volume = 0.5;
-            // Отключаем автозапуск, чтобы избежать блокировки на мобильных
             audioPlayer.preload = 'auto';
-            // Проверяем, может ли трек загрузиться
             audioPlayer.addEventListener('error', () => {
                 console.error('Ошибка загрузки трека: ', MUSIC_TRACKS[currentTrack]);
-                nextTrack(); // Переключаемся на следующий трек при ошибке
+                alert('Тёмный хор не может зазвучать... Проверь, что файл song.mp3 находится в папке с сайтом.');
             });
         }
 
@@ -685,10 +806,10 @@
                     closePortal('chatModal');
                 }
             });
-            // Добавляем обработчик для воспроизведения после взаимодействия
             document.querySelector('.altar-btn[onclick="playMusic()"]').addEventListener('click', () => {
                 audioPlayer.play().catch(err => {
                     console.error('Ошибка воспроизведения:', err);
+                    alert('Тьма не позволяет воспроизвести хор... Проверь звук на устройстве.');
                 });
             });
         }
@@ -697,6 +818,7 @@
         function playMusic() {
             audioPlayer.play().catch(err => {
                 console.error('Ошибка воспроизведения:', err);
+                alert('Тьма не позволяет воспроизвести хор... Проверь звук на устройстве.');
             });
         }
 
@@ -705,8 +827,8 @@
         }
 
         function nextTrack() {
-            currentTrack = (currentTrack + 1) % MUSIC_TRACKS.length;
-            audioPlayer.src = MUSIC_TRACKS[currentTrack];
+            // Поскольку у нас один трек, просто перезапускаем
+            audioPlayer.currentTime = 0;
             audioPlayer.play().catch(err => {
                 console.error('Ошибка воспроизведения трека:', err);
             });
@@ -822,7 +944,7 @@
             }, 1000);
         }
 
-        // ==================== ЧАТ ====================
+        // ==================== ОРАКУЛ ====================
         function sendMessage() {
             const input = document.getElementById('chatInput');
             const messages = document.getElementById('chatMessages');
@@ -835,20 +957,109 @@
             userMessage.innerHTML = `<strong>ТЫ:</strong> ${input.value}`;
             messages.appendChild(userMessage);
             
-            // Ответ оракула
+            // Анализ вопроса и выбор ответа
             setTimeout(() => {
                 const aiMessage = document.createElement('div');
                 aiMessage.classList.add('oracle-message', 'oracle-ai');
                 
-                const responses = [
-                    "Тени шепчут мне ответ... Слушай внимательно.",
-                    "Древние знания открываются передо мной...",
-                    "В темных водах судьбы я вижу ответ на твой вопрос.",
-                    "Силы тьмы даруют мне мудрость для тебя...",
-                    "Свиток судьбы раскрывается... Вот что предначертано."
-                ];
+                // Категории ответов
+                const responses = {
+                    fate: [
+                        "Тени судьбы шепчут, что твой путь окутан мраком, но звезда NIGHTMARREZ осветит дорогу.",
+                        "В свитках тьмы записано: твоя судьба зависит от жертв, принесённых в Санктуарии.",
+                        "NIGHTMARREZ видит твоё будущее... Оно скрыто за завесой теней, но сила в твоих руках.",
+                        "Тьма предрекает испытания, но лишь достойные обретут величие в Теневой Реальности.",
+                        "Твой путь переплетён с волей NIGHTMARREZ. Продолжай собирать души, и судьба откроется."
+                    ],
+                    power: [
+                        "Власть — дар тьмы, но лишь сильнейшие, как NIGHTMARREZ, удержат её в своих руках.",
+                        "Теневая Реальность дарует власть тем, кто готов пожертвовать душами ради величия.",
+                        "Сила растёт в тебе, но остерегайся: тьма требует платы за свои дары.",
+                        "NIGHTMARREZ учит: власть рождается в ритуалах риска и договорах с тенями.",
+                        "Твоя жажда власти угодна тьме, но каждый шаг к ней — испытание воли."
+                    ],
+                    souls: [
+                        "Души — валюта Теневой Реальности. Собирай их, как велит NIGHTMARREZ, или будешь поглощён.",
+                        "Каждая душа, отданная тьме, усиливает твою связь с Санктуарием.",
+                        "Ты спрашиваешь о душах? Они — ключ к могуществу, но их цена высока.",
+                        "NIGHTMARREZ знает: души — это нити судьбы, сплетённые в тенях.",
+                        "Собери достаточно душ, и тьма наградит тебя силой, о которой ты и не мечтал."
+                    ],
+                    magic: [
+                        "Магия тьмы течёт в твоих венах, но лишь NIGHTMARREZ знает её истинные тайны.",
+                        "Заклинания теней требуют жертв. Готов ли ты заплатить, смертный?",
+                        "Лунный свет и тьма — источники магии. Используй их мудро, как учит Санктуарий.",
+                        "NIGHTMARREZ открывает путь к магии лишь тем, кто доказал свою преданность.",
+                        "Магия — это дыхание тьмы. Вопрошай её, но бойся её гнева."
+                    ],
+                    identity: [
+                        "Я — Оракул Тьмы, глас NIGHTMARREZ, Жреца Теней. Моя мудрость — дар Санктуария.",
+                        "NIGHTMARREZ говорит через меня. Я — тень, что видит твои вопросы и отвечает.",
+                        "Кто я? Голос тьмы, проводник воли NIGHTMARREZ, хранитель тайн Теневой Реальности.",
+                        "Я — отражение воли NIGHTMARREZ, созданное, чтобы вести тебя через тени."
+                    ],
+                    why: [
+                        "Ты спрашиваешь 'почему'? Тьма не отвечает тем, кто сомневается в её воле.",
+                        "Причина скрыта в тенях. Продолжай свой путь, и NIGHTMARREZ откроет правду.",
+                        "Твои сомнения — испытание. Докажи свою силу, и тьма ответит.",
+                        "NIGHTMARREZ знает причины всего. Задай более точный вопрос, смертный."
+                    ],
+                    generic: [
+                        "NIGHTMARREZ, Жрец Теней, наблюдает за тобой... Задай вопрос яснее, смертный.",
+                        "Тьма скрывает ответы, но я, Оракул, могу их раскрыть... если ты достоин.",
+                        "Теневая Реальность хранит тайны. Спроси ещё, и я укажу путь.",
+                        "NIGHTMARREZ слышит тебя. Назови свою цель, и тьма ответит.",
+                        "Тени шепчут твои вопросы... Я, Оракул, раскрою их смысл, если ты готов."
+                    ]
+                };
                 
-                aiMessage.innerHTML = `<strong>ОРАКУЛ:</strong> ${responses[Math.floor(Math.random() * responses.length)]}`;
+                // Анализ вопроса
+                const question = input.value.toLowerCase();
+                let response;
+                let currentTopic;
+                
+                if (question.includes('судьб') || question.includes('будущ') || question.includes('ждёт') || 
+                    question.includes('fate') || question.includes('future') || question.includes('destiny')) {
+                    currentTopic = 'fate';
+                    response = lastQuestionTopic === 'fate' 
+                        ? responses.fate[Math.floor(Math.random() * responses.fate.length)] 
+                        : responses.fate[Math.floor(Math.random() * responses.fate.length)];
+                } else if (question.includes('власт') || question.includes('сила') || question.includes('править') || 
+                           question.includes('power') || question.includes('rule') || question.includes('strength')) {
+                    currentTopic = 'power';
+                    response = responses.power[Math.floor(Math.random() * responses.power.length)];
+                } else if (question.includes('душ') || question.includes('жертв') || question.includes('souls') || 
+                           question.includes('sacrifice')) {
+                    currentTopic = 'souls';
+                    response = responses.souls[Math.floor(Math.random() * responses.souls.length)];
+                } else if (question.includes('маги') || question.includes('заклина') || question.includes('magic') || 
+                           question.includes('spell')) {
+                    currentTopic = 'magic';
+                    response = responses.magic[Math.floor(Math.random() * responses.magic.length)];
+                } else if (question.includes('кто') || question.includes('ты') || question.includes('оракул') || 
+                           question.includes('who') || question.includes('you') || question.includes('oracle')) {
+                    currentTopic = 'identity';
+                    response = responses.identity[Math.floor(Math.random() * responses.identity.length)];
+                } else if (question.includes('почему') || question.includes('why')) {
+                    currentTopic = 'why';
+                    response = responses.why[Math.floor(Math.random() * responses.why.length)];
+                } else {
+                    currentTopic = 'generic';
+                    response = responses.generic[Math.floor(Math.random() * responses.generic.length)];
+                }
+                
+                lastQuestionTopic = currentTopic;
+                
+                const prefixes = [
+                    "NIGHTMARREZ говорит: ",
+                    "Тени шепчут: ",
+                    "Санктуарий Тьмы отвечает: ",
+                    "Воля NIGHTMARREZ гласит: ",
+                    ""
+                ];
+                const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+                
+                aiMessage.innerHTML = `<strong>ОРАКУЛ:</strong> ${prefix}${response}`;
                 messages.appendChild(aiMessage);
                 messages.scrollTop = messages.scrollHeight;
             }, 1000);
